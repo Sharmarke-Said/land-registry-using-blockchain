@@ -37,28 +37,30 @@ const dashboard = () => {
     // console.log("Account: " + accounts[0]);
   };
 
-  async function SendOTP(aadhar) {
+  async function SendOTP(nationalId) {
     const url = `http://localhost:8000/otp/sendOtp/`;
     console.log(url);
     try {
-      const response = await axios.post(url, { aadharNo: aadhar });
+      const response = await axios.post(url, {
+        nationalId: nationalId,
+      });
       console.log(response);
     } catch (error) {
       console.log(error);
     }
   }
 
-  async function VerifyOTP(user, aadhar, otp) {
+  async function VerifyOTP(user, nationalId, otp) {
     const url = `http://localhost:8000/otp/verifyOtp/`;
     console.log(url);
     try {
       const response = await axios.post(url, {
-        aadharNo: aadhar,
+        nationalId: nationalId,
         otp: otp,
       });
       console.log(response);
       alert(response.data);
-      console.log("User " + aadhar + " Sucessfull Verified!!");
+      console.log("User " + nationalId + " Sucessfull Verified!!");
       if (user == "seller") {
         window.location = "/form";
       } else if (user == "buyer") {
@@ -82,25 +84,25 @@ const dashboard = () => {
   //   VerifyOTP("seller", values["Adhar Number"], values["otp"]);
   // };
   const onFinishUserLogin = async (role, values) => {
-    const aadhar = values["Adhar Number"];
+    const nationalId = values["Adhar Number"];
     const otp = values["otp"];
 
-    if (!aadhar || !otp) {
-      alert("Please provide both Aadhar Number and OTP");
+    if (!nationalId || !otp) {
+      alert("Please provide both nationalId Number and OTP");
       return;
     }
 
     try {
       // First: ensure the user exists or is created
       await axios.post("http://localhost:8000/otp/sendOtp", {
-        aadharNo: aadhar,
+        nationalId: nationalId,
       });
 
       // Then: verify OTP (always 123456)
       const response = await axios.post(
         "http://localhost:8000/otp/verifyOtp",
         {
-          aadharNo: aadhar,
+          nationalId: nationalId,
           otp,
         }
       );

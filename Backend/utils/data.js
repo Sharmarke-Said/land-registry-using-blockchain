@@ -4,7 +4,7 @@ const userDetails = require("../models/userDetails");
 // Define the dummy users you want to create
 const dummyUsers = [
   {
-    aadharNo: "123456789012",
+    nationalId: "123456789012",
     phoneNo: "1234567890",
     name: "Dummy User",
     email: "dummyuser@example.com",
@@ -12,7 +12,7 @@ const dummyUsers = [
     otpValidityMinutes: 1500, // 1500 minutes
   },
   {
-    aadharNo: "123456789013",
+    nationalId: "123456789013",
     phoneNo: "1234567891",
     name: "Dummy User 2",
     email: "dummyuser2@example.com",
@@ -26,20 +26,27 @@ const createDummyUsers = async () => {
   try {
     // Iterate over each user in the users array
     for (const user of dummyUsers) {
-      const { aadharNo, phoneNo, name, email, otp, otpValidityMinutes } = user;
+      const {
+        nationalId,
+        phoneNo,
+        name,
+        email,
+        otp,
+        otpValidityMinutes,
+      } = user;
 
-      // Check if the user already exists based on aadharNo
-      const existingUser = await userDetails.findOne({ aadharNo });
+      // Check if the user already exists based on nationalId
+      const existingUser = await userDetails.findOne({ nationalId });
 
       if (existingUser) {
         console.log(
-          `User with Aadhar No ${aadharNo} already exists:`,
+          `User with nationalId No ${nationalId} already exists:`,
           existingUser
         );
       } else {
         // Create a new user instance
         const newUser = new userDetails({
-          aadharNo,
+          nationalId,
           phoneNo: phoneNo.toString(), // Ensure phoneNo is a string
           name,
           email,

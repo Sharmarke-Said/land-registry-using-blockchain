@@ -6,9 +6,9 @@ const UserDetails = require("../models/userDetails");
 // const sendMessage = require("../utils/sendMessage");
 
 router.post("/sendOtp", async (req, res) => {
-  const { aadharNo } = req.body;
+  const { nationalId } = req.body;
 
-  if (!aadharNo) {
+  if (!nationalId) {
     return res
       .status(400)
       .send({ message: "Please enter the required fields" });
@@ -18,7 +18,7 @@ router.post("/sendOtp", async (req, res) => {
     const otp = 123456;
     const otpValidTill = Date.now() + 15 * 60 * 1000;
 
-    let user = await UserDetails.findOne({ aadharNo });
+    let user = await UserDetails.findOne({ nationalId });
 
     if (user) {
       // Update existing user OTP
@@ -33,7 +33,7 @@ router.post("/sendOtp", async (req, res) => {
     // Create new user with autofilled fields
     const randomSuffix = Math.floor(1000 + Math.random() * 9000);
     const newUser = new UserDetails({
-      aadharNo,
+      nationalId,
       otp,
       otpValidTill,
       name: `User ${randomSuffix}`,
@@ -54,17 +54,17 @@ router.post("/sendOtp", async (req, res) => {
 });
 
 router.post("/verifyOtp", async (req, res) => {
-  if (!req.body.aadharNo || !req.body.otp) {
+  if (!req.body.nationalId || !req.body.otp) {
     res.status(400).send({
       message: "Please enter the required fields",
     });
     return;
   }
   try {
-    const aadharNo = req.body.aadharNo;
+    const nationalId = req.body.nationalId;
     const otp = req.body.otp;
     var user_details = await UserDetails.findOne({
-      aadharNo: aadharNo,
+      nationalId: nationalId,
     });
 
     if (!user_details) {
