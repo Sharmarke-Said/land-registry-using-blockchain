@@ -17,7 +17,7 @@ var landarray = [
   "https://media.istockphoto.com/id/1179655501/photo/wheat-field.jpg?s=170667a&w=0&k=20&c=IBKD9ZGmVWrFHW0nL1yUdmprOTTxuLediny3gTCbfBo=",
 ];
 
-var BuyerNames = ["Aman", "Kumar", "Ravi", "Suresh", "Ramesh"];
+var BuyerNames = ["Ahmed", "Abukar", "Sharmake", "Ali", "Yusuf"];
 
 export const getMetadataURL = async (
   City,

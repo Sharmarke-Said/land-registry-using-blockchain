@@ -340,7 +340,7 @@ const processstatus = () => {
         <iframe
           width="100%"
           height="640"
-          frameborder="0"
+          frameBorder="0"
           allow="xr-spatial-tracking; gyroscope; accelerometer"
           allowfullscreen
           scrolling="no"
@@ -371,7 +371,7 @@ const processstatus = () => {
           width="100%"
           height="640"
           src="https://xmtp.chat/inbox"
-          frameborder="0"
+          frameBorder="0"
         ></iframe>
       </Modal>
       <Modal
@@ -499,7 +499,7 @@ const processstatus = () => {
                       MaketokenPayment(
                         PropertyID,
                         Buyer_address,
-                        "0x7ed790a1ac108b9a50e24f5c5e061df59e3673a7",
+                        "0x7ED790A1Ac108b9A50e24f5c5E061df59e3673a7",
                         parseInt(Price) * 0.06
                       )
                     }

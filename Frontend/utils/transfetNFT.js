@@ -21,9 +21,6 @@
 // };
 // export default TransferNFT;
 
-
-
-
 // {
 //   "tokenID":"1234",
 //   "propertyID":"1234",

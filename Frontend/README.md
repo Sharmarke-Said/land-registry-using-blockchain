@@ -1,14 +1,17 @@
 # LandChain
 
-## PS: 
+## PS:
+
 Land records in India are managed and maintained by the Indian Revenue System (IRS). Accelerate the process of land registration in India and reduce fraud related to ownership, existence, exchange, and transactions. Developed blockchain based secure sharable land records repository for Indian Revenue System.
 
-## Solution: 
+## Solution:
+
 This project proposes to develop a blockchain-based secure, sharable land records repository for the Indian Revenue System (IRS) in order to increase efficiency and transparency in the land records management system in India. The proposed system aims to automate the land registration process using smart contracts, reduce the risk of fraud in land transactions, and improve the overall integrity and reliability of the land records management system. The project team plans to use NextJS, Polygon Technology, IPFS, Metamask, NodeJS, Remix, and Emotion CSS to develop the platform. The proposed process flow includes pre-agreement, sell request, verification, approval, notification, fund transfer, ownership transfer, ownership certificate, and record update. The project's deliverables include a functional model, a web-based platform, a dataset of verified land records, and a research paper.
 
 <hr/>
 
 # Methadology
+
 - `Pre-agreement` : Buyer and seller sign a contract with details of the transfer and payment status.
 - `Sell request`: The pre-agreement is sent to the registry office to request the sale of the property.
 - `Verification`: The registry office sends verification requests to bank, revenue department, surveyor, and registry office to validate ownership and dues.
@@ -24,6 +27,7 @@ This project proposes to develop a blockchain-based secure, sharable land record
 <hr/>
 
 # Smart Contract
+
 ERC721 Contract (Polygon MATIC)
 https://polygonscan.com/tx/0xbc437c69e5f6a0e4ac0a3ee395461fc438ecbf3a94eb2c651ea5f5c58b3e93ab
 
@@ -44,6 +48,7 @@ Emotion CSS
 <hr/>
 
 # Functional Specifications (Deliverables):
+
 ● A functional model for a sharable land records repository that can determine land
 ownership, resolve disputes, and collect revenue for the Indian Revenue System.
 ● A web-based platform that integrates blockchain technology to secure land
@@ -58,6 +63,7 @@ can be published in a conference or journal.
 <hr/>
 
 # Project Scope:
+
 Accelerating the process of land registration as well as reducing fraud. Depending on its
 purpose, it may be used to prove ownership, existence, exchange, or transaction of an
 item. It allows for Transparency in Smart Contracts as well as allowing for the tracing of
@@ -66,7 +72,6 @@ ownership records back to their inception by virtue of Smart Contracts.
 <hr/>
 
 # Team
-
 
 <!-- {
   "_id": {
@@ -94,7 +99,6 @@ ownership records back to their inception by virtue of Smart Contracts.
 }
 
  -->
-
 
  <!-- {
   "_id": {
@@ -151,5 +155,3 @@ ownership records back to their inception by virtue of Smart Contracts.
   "physicalSurveyNo": 2222,
   "status":false
 } -->
-
-

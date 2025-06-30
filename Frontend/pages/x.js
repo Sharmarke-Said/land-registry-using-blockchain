@@ -8,8 +8,15 @@ import { VerifyData } from "../utils/verifyData";
 import { InsertData } from "../utils/insertData";
 import Metamask from "../components/metamask";
 import { UpdateData } from "../utils/updateData";
-import { GetTokenId, TransferOwnership } from "../utils/ContractPlugins";
-import { CheckBalance, MakePayment, TokenApprove } from "../utils/makePayment";
+import {
+  GetTokenId,
+  TransferOwnership,
+} from "../utils/ContractPlugins";
+import {
+  CheckBalance,
+  MakePayment,
+  TokenApprove,
+} from "../utils/makePayment";
 
 const x = () => {
   return (
@@ -26,7 +33,9 @@ const x = () => {
       </button>{" "}
       <br />
       <button
-        onClick={() => InsertData({ propertyID: 23345645, owner: "werty" })}
+        onClick={() =>
+          InsertData({ propertyID: 23345645, owner: "werty" })
+        }
       >
         Data insert
       </button>{" "}
@@ -74,7 +83,7 @@ const x = () => {
       <button
         onClick={() =>
           CreateNFT(
-            "0x7ed790a1ac108b9a50e24f5c5e061df59e3673a7",
+            "0x7ED790A1Ac108b9A50e24f5c5E061df59e3673a7",
             "tokenURI",
             "Name",
             "description",
