@@ -1,7 +1,8 @@
 import axios from "axios";
 
 export const retrieveNFT = async () => {
-  const contractaddress = "0x2f9227E2e1465a1bB38cE53c4516eC867Ac1535D";
+  const contractaddress =
+    "0x2f9227E2e1465a1bB38cE53c4516eC867Ac1535D";
   // const contractaddress = '0x6fdfe7feec201a840bd4709bbb8e0d2aa0a1ae53'
   const chain = "polygon";
 

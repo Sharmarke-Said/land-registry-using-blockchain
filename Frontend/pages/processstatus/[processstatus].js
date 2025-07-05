@@ -22,6 +22,7 @@ import {
 import { Footer } from "../../components/Footer";
 import { useRouter, Router } from "next/router";
 import { UpdateData } from "../../utils/updateData";
+import { ApproveNFT } from "../../utils/ContractPlugins";
 import {
   CheckBalance,
   MakePayment,
@@ -236,7 +237,8 @@ const processstatus = () => {
     {
       key: "3",
       name: InspectorName,
-      address: "-",
+      // address: "-",
+      address: "0x196ce4F6e2E731585B9ddc969fEd85F6cE4ED60F",
       tags: ["LAND INSPECTOR"],
     },
   ];
@@ -441,6 +443,39 @@ const processstatus = () => {
                 >
                   XMTP Chat
                 </button>
+                {/* {address === ownerAddress && ProcessStatus === 4 && (
+                  <button
+                    className="bg-purple-600 text-white font-bold py-2 px-4 rounded w-[30%] hover:bg-purple-800 mx-2 my-2"
+                    onClick={() => transferNFT(PropertyID)}
+                  >
+                    Approve & Transfer Ownership
+                  </button>
+                )} */}
+                <button
+                  className="bg-purple-600 text-white font-bold py-2 px-4 rounded w-[30%] hover:bg-purple-800 mx-2 my-2"
+                  onClick={async () => {
+                    const inspectorAddress =
+                      "0x196ce4F6e2E731585B9ddc969fEd85F6cE4ED60F"; // Replace with actual inspector address if dynamic
+                    console.log(
+                      "Approving NFT for Inspector:",
+                      inspectorAddress,
+                      "Token ID:",
+                      Tokenid
+                    );
+                    const success = await ApproveNFT(
+                      inspectorAddress,
+                      Tokenid
+                    );
+                    if (success) {
+                      alert("NFT approved for land inspector ✅");
+                    } else {
+                      alert("Failed to approve NFT ❌");
+                    }
+                  }}
+                >
+                  Approve Inspector
+                </button>
+
                 {ProcessStatus < 3 ? (
                   <button
                     className="bg-blue-500 text-white font-bold py-2 px-4 rounded w-[30%] hover:bg-blue-700  mx-2 my-2 "

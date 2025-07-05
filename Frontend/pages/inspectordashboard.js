@@ -76,8 +76,13 @@ const inspectordashboard = () => {
   //   setDataset(response.data);
   // });
 
+  // var data = Dataset.filter(function (el) {
+  //   return el.request == true && el.Buyer_address != "0";
+  // });
   var data = Dataset.filter(function (el) {
-    return el.request == true && el.Buyer_address != "0";
+    return (
+      el.ProcessStatus >= 1 && el.ProcessStatus <= 5 // include all in-progress and completed
+    );
   });
 
   async function transferNFT(propertyID) {
@@ -125,7 +130,9 @@ const inspectordashboard = () => {
       return el.propertyID == propertyID;
     });
     console.log(data[0]);
-    window.open("https://testnet.bscscan.com/tx/" + data[0].TransactionHash);
+    window.open(
+      "https://testnet.bscscan.com/tx/" + data[0].TransactionHash
+    );
     return data[0].TransactionHash;
   }
 
@@ -223,8 +230,14 @@ const inspectordashboard = () => {
             }}
           />
           <Button.Group>
-            <Button onClick={() => decline(PID)} icon={<MinusOutlined />} />
-            <Button onClick={() => increase(PID)} icon={<PlusOutlined />} />
+            <Button
+              onClick={() => decline(PID)}
+              icon={<MinusOutlined />}
+            />
+            <Button
+              onClick={() => increase(PID)}
+              icon={<PlusOutlined />}
+            />
           </Button.Group>
         </>
       ),

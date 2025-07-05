@@ -29,7 +29,9 @@ export const CreateNFT = async (
     } catch (error) {}
   });
 
-  const accounts = await ethereum.request({ method: "eth_requestAccounts" });
+  const accounts = await ethereum.request({
+    method: "eth_requestAccounts",
+  });
   const address = accounts[0];
 
   const web3 = new Web3(window.ethereum);
@@ -47,9 +49,12 @@ export const GetNFT = async () => {
   const omitMetadata = false;
 
   // Get all NFTs
-  const response = await alchemy.nft.getNftsForContract(contractAddress, {
-    omitMetadata: omitMetadata,
-  });
+  const response = await alchemy.nft.getNftsForContract(
+    contractAddress,
+    {
+      omitMetadata: omitMetadata,
+    }
+  );
   console.log(JSON.stringify(response, null, 2));
 };
 
@@ -82,7 +87,9 @@ export const TransferOwnership = async (from, to, tokenId) => {
     } catch (error) {}
   });
   try {
-    const accounts = await ethereum.request({ method: "eth_requestAccounts" });
+    const accounts = await ethereum.request({
+      method: "eth_requestAccounts",
+    });
     const address = accounts[0];
 
     const web3 = new Web3(window.ethereum);
@@ -94,6 +101,69 @@ export const TransferOwnership = async (from, to, tokenId) => {
     return true;
   } catch (error) {
     console.log(error);
+    return false;
+  }
+};
+
+// export const ApproveNFT = async (to, tokenId) => {
+//   if (typeof window.ethereum === "undefined") {
+//     alert("Please install MetaMask first.");
+//     return false;
+//   }
+
+//   try {
+//     const accounts = await ethereum.request({
+//       method: "eth_requestAccounts",
+//     });
+//     const address = accounts[0]; // Seller wallet must be connected
+
+//     const web3 = new Web3(window.ethereum);
+//     const contract = new web3.eth.Contract(abi, contractAddress);
+
+//     const approveTx = await contract.methods
+//       .approve(to, tokenId)
+//       .send({
+//         from: address,
+//       });
+
+//     console.log("Approved NFT:", approveTx);
+//     return true;
+//   } catch (error) {
+//     console.log("ApproveNFT error:", error);
+//     return false;
+//   }
+// };
+
+export const ApproveNFT = async (to, tokenId) => {
+  if (!window.ethereum) {
+    alert("Please install MetaMask first.");
+    return false;
+  }
+
+  try {
+    const accounts = await ethereum.request({
+      method: "eth_requestAccounts",
+    });
+    const address = accounts[0];
+
+    const web3 = new Web3(window.ethereum);
+    const contract = new web3.eth.Contract(abi, contractAddress);
+
+    console.log(
+      `Approving tokenId ${tokenId} for address ${to} from ${address}`
+    );
+
+    const approveTx = await contract.methods
+      .approve(to, tokenId)
+      .send({ from: address });
+
+    console.log("Approved NFT transaction:", approveTx);
+    return true;
+  } catch (error) {
+    console.error("ApproveNFT error:", error);
+    if (error.data && error.data.message) {
+      console.error("Revert reason:", error.data.message);
+    }
     return false;
   }
 };
@@ -116,7 +186,10 @@ export const AllowanceToken = async (from, to) => {
     const web3 = new Web3(window.ethereum);
 
     // Initialize the contract
-    const contract = new web3.eth.Contract(Paymentabi, PaymentcontractAddress);
+    const contract = new web3.eth.Contract(
+      Paymentabi,
+      PaymentcontractAddress
+    );
     console.log("contract:", contract);
     // Call the allowance method (read-only)
     const allowance = await contract.methods
@@ -126,7 +199,10 @@ export const AllowanceToken = async (from, to) => {
     console.log("Allowance:", allowance);
     return allowance; // Optionally return the allowance value
   } catch (error) {
-    console.error("An error occurred while fetching allowance:", error);
+    console.error(
+      "An error occurred while fetching allowance:",
+      error
+    );
     // Optionally, handle specific error types here
   }
 };
@@ -142,11 +218,16 @@ export const ApporveToken = async (spender, value) => {
     } catch (error) {}
   });
 
-  const accounts = await ethereum.request({ method: "eth_requestAccounts" });
+  const accounts = await ethereum.request({
+    method: "eth_requestAccounts",
+  });
   const address = accounts[0];
 
   const web3 = new Web3(window.ethereum);
-  const contract = new web3.eth.Contract(Paymentabi, PaymentcontractAddress);
+  const contract = new web3.eth.Contract(
+    Paymentabi,
+    PaymentcontractAddress
+  );
 
   const approve = await contract.methods
     .approve(spender, value * 10 ** 18)

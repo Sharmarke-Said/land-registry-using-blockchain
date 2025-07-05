@@ -15,7 +15,7 @@ contract MyNFT is ERC721URIStorage, Ownable {
         string memory symbol
     )
         ERC721(name, symbol)
-        Ownable(msg.sender) // Add Ownable constructor
+        // Ownable(msg.sender) // Add Ownable constructor
     {}
 
     function createNFT(
