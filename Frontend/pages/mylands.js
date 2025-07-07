@@ -35,8 +35,8 @@ const props = {
   },
 };
 
-const LandForm = () => {
-  // Renamed component from 'form' to 'LandForm' for better naming convention
+const MyLands = () => {
+  // Renamed component from 'LandForm' to 'MyLands'
   const [Dataset, setDataset] = useState([]);
   const [accountid, setAccount] = useState("Connect Wallet");
   const [autoPID, setAutoPID] = useState(""); // State for auto-generated PID
@@ -336,4 +336,4 @@ const LandForm = () => {
   );
 };
 
-export default LandForm; // Export the renamed component
+export default MyLands; // Export the renamed component

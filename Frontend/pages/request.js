@@ -64,7 +64,9 @@ const columns1 = [
       <div className="flex">
         {" "}
         <button
-          onClick={() => (window.location.href = `/processstatus/${text}`)}
+          onClick={() =>
+            (window.location.href = `/processstatus/${text}`)
+          }
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold w-full mr-4 py-2 rounded"
         >
           View Land Status
@@ -86,9 +88,14 @@ function AcceptResponse(text) {
 }
 
 function RejectResponse(text) {
-  UpdateData({ Buyer_address: "0", request: false, ProcessStatus: 1 }, text);
+  UpdateData(
+    { Buyer_address: "0", request: false, ProcessStatus: 1 },
+    text
+  );
   UpdateData({ request: false }, text);
-  alert("Your Response is Rejected\nYou will be redirected to lands Page");
+  alert(
+    "Your Response is Rejected\nYou will be redirected to lands Page"
+  );
 }
 
 const columns = [
@@ -172,7 +179,9 @@ const Request = () => {
 
   // Land I Request
   let data1 = Dataset.filter(function (el) {
-    console.log("sdfghgds " + el.Buyer_address + " wergfth " + accountid);
+    console.log(
+      "sdfghgds " + el.Buyer_address + " wergfth " + accountid
+    );
     return el.Buyer_address == accountid.toLowerCase();
   });
 

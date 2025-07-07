@@ -15,12 +15,11 @@ import {
   Table,
   Tag,
   Button,
-  Checkbox,
   Form,
   Input,
 } from "antd";
 import { Footer } from "../../components/Footer";
-import { useRouter, Router } from "next/router";
+import { useRouter } from "next/router";
 import { UpdateData } from "../../utils/updateData";
 import { ApproveNFT } from "../../utils/ContractPlugins";
 import {
@@ -30,37 +29,40 @@ import {
   PaymentBuyertoSeller,
 } from "../../utils/makePayment";
 import { Chat } from "../../PushModule/@pushprotocol/uiweb";
-import bgimage from "../../public/images/white.png";
 
-var id = "";
-var Owner = "";
-var Tokenid = "";
-var PropertyID = "";
-var SurveyNo = "";
-var Area = "";
-var Buyer_name = "";
-var ownerAddress = "";
-var Buyer_address = "";
-var InspectorName = "";
-var Document_Access = "";
-var tokensend = "process";
-var ProcessStatus;
-var Document_Verify = "wait";
-var Transaction = "wair";
-var Ownership_Transfer = "wait";
-var Price = "";
-var request = false;
-var ImageURL = "";
-var DocumentURL = "";
-var ICON = <LoadingOutlined />;
-var PaymentStatus = false;
-var address;
-var support_address;
-var BuyerTokenstatus = false;
-var StampDutyTokenStatus = false;
-var OwnerAdhar = "";
-var OwnerContact = "";
-var PaymentDuration = "";
+// Initialize variables outside the component.
+// It's generally better to use React state for variables that cause re-renders,
+// but for values derived from props/state and not directly triggering UI updates
+// by themselves, this can be acceptable if handled carefully.
+let id = "";
+let Owner = "";
+let Tokenid = "";
+let PropertyID = "";
+let SurveyNo = "";
+let Area = "";
+let Buyer_name = "";
+let ownerAddress = "";
+let Buyer_address = "";
+let InspectorName = "";
+let Document_Access = "";
+let tokensend = "process";
+let ProcessStatus;
+let Document_Verify = "wait";
+let Transaction = "wait";
+let Ownership_Transfer = "wait";
+let Price = "";
+let request = false;
+let ImageURL = "";
+let DocumentURL = "";
+let ICON = <LoadingOutlined />;
+let PaymentStatus = false;
+let address;
+let support_address;
+let BuyerTokenstatus = false;
+let StampDutyTokenStatus = false;
+let OwnerAdhar = "";
+let OwnerContact = "";
+let PaymentDuration = "";
 
 const columns = [
   {
@@ -96,30 +98,103 @@ const columns = [
   },
 ];
 
-async function getaddress() {
-  const accounts = await ethereum.request({
-    method: "eth_requestAccounts",
-  });
-  address = accounts[0];
-  if (address == ownerAddress) {
-    support_address = Buyer_address;
-  } else {
-    support_address = ownerAddress;
-  }
-}
-
-const processstatus = () => {
+const ProcessStatusComponent = () => {
   const [open3d, setOpen3d] = useState(false);
   const [openprice, setOpenprice] = useState(false);
   const [opennotify, setOpennotify] = useState(false);
   const [opendocument, setOpendocument] = useState(false);
   const [openchat, setOpenChat] = useState(false);
   const [Dataset, setDataset] = useState([]);
-  // const [Owner, setOwner] = useState("");
-  // const [Tokenid, setTokenid] = useState("");
-  // const [PropertyID, setPropertyID] = useState("");
-  // const [SurveyNo, setSurveyNo] = useState("");
-  // const [Area, setArea] = useState("");
+  const [accountAddress, setAccountAddress] = useState("");
+  const [notificationMessage, setNotificationMessage] = useState(""); // New state for dynamic message
+  const [hasShownNotification, setHasShownNotification] =
+    useState(false); // New state to prevent re-opening
+
+  const router = useRouter();
+  const { processstatus: queryPropertyID } = router.query;
+
+  const getAddress = async () => {
+    if (typeof window !== "undefined" && window.ethereum) {
+      try {
+        const accounts = await window.ethereum.request({
+          method: "eth_requestAccounts",
+        });
+        setAccountAddress(accounts[0]);
+      } catch (error) {
+        console.error("Error connecting to Metamask:", error);
+      }
+    }
+  };
+
+  useEffect(() => {
+    getAddress();
+    FetchData();
+  }, [queryPropertyID, accountAddress]);
+
+  useEffect(() => {
+    if (Dataset.length > 0 && queryPropertyID) {
+      const currentLand = Dataset.find(
+        (data) => data.propertyID == queryPropertyID
+      );
+      if (currentLand) {
+        id = currentLand._id;
+        Owner = currentLand.owner;
+        Tokenid = currentLand.tokenID;
+        PropertyID = currentLand.propertyID;
+        SurveyNo = currentLand.physicalSurveyNo;
+        Area = currentLand.Area;
+        Buyer_name = currentLand.Buyer_name;
+        ownerAddress = currentLand.ownerAddress;
+        Buyer_address = currentLand.Buyer_address;
+        Document_Access = currentLand.Document_Access;
+        tokensend = currentLand.tokensend;
+        ProcessStatus = currentLand.ProcessStatus;
+        Document_Verify = currentLand.Document_Verify;
+        Transaction = currentLand.Transaction;
+        Ownership_Transfer = currentLand.Ownership_Transfer;
+        Price = currentLand.Price;
+        ImageURL = currentLand.ImageURL;
+        request = currentLand.request;
+        InspectorName = currentLand.InspectorName;
+        DocumentURL = currentLand.DocumentURL;
+        PaymentStatus = currentLand.PaymentStatus;
+        BuyerTokenstatus = currentLand.BuyerTokenstatus;
+        StampDutyTokenStatus = currentLand.StampDutyTokenStatus;
+        OwnerAdhar = currentLand.OwnerAdhar;
+        OwnerContact = currentLand.OwnerContact;
+        PaymentDuration = currentLand.PaymentDuration;
+
+        if (
+          accountAddress &&
+          accountAddress.toLowerCase() === ownerAddress.toLowerCase()
+        ) {
+          support_address = Buyer_address;
+        } else if (accountAddress) {
+          support_address = ownerAddress;
+        }
+
+        // Handle notification if process is finished
+        if (ProcessStatus === 5 && !hasShownNotification) {
+          const message =
+            accountAddress.toLowerCase() ===
+            ownerAddress.toLowerCase()
+              ? "Thanks for Selling Land! ❤️"
+              : "Thanks for Buying Land! ❤️";
+          setNotificationMessage(message);
+          setOpennotify(true);
+          setHasShownNotification(true); // Mark that the notification has been shown
+        } else if (ProcessStatus !== 5 && hasShownNotification) {
+          // Reset hasShownNotification if ProcessStatus changes away from 5
+          setHasShownNotification(false);
+        }
+      }
+    }
+  }, [
+    Dataset,
+    queryPropertyID,
+    accountAddress,
+    hasShownNotification,
+  ]); // Add hasShownNotification to dependencies
 
   const onFinish = (values) => {
     console.log("Success:", values);
@@ -130,95 +205,43 @@ const processstatus = () => {
     alert(
       "Price Updated Successfully. Please wait for the transaction to be completed."
     );
+    setOpenprice(false);
     FetchData();
   };
+
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
   };
 
-  function SetIcon(stateno, ProcessStatus) {
-    if (stateno == ProcessStatus) {
-      ICON = <LoadingOutlined />;
+  function SetIcon(stateno, currentProcessStatus) {
+    if (stateno === currentProcessStatus) {
+      return <LoadingOutlined />;
+    } else if (stateno < currentProcessStatus) {
+      return <SolutionOutlined />;
     } else {
-      ICON = <SolutionOutlined />;
+      return <UserOutlined />;
     }
-    return ICON;
   }
 
-  function SetStatus(stateno, ProcessStatus) {
-    if (stateno == ProcessStatus) {
+  function SetStatus(stateno, currentProcessStatus) {
+    if (stateno === currentProcessStatus) {
       return "process";
-    } else if (stateno <= ProcessStatus) {
+    } else if (stateno < currentProcessStatus) {
       return "finish";
     } else {
       return "wait";
     }
   }
 
-  getaddress();
-
-  const router = useRouter();
-  const { processstatus } = router.query;
-
-  if (5 == ProcessStatus) {
-    setOpennotify(true);
-    ProcessStatus = 6;
-    return "finish";
-  }
-
   function FetchData() {
     fetch("http://localhost:8000/SellingLand/")
       .then((response) => response.json())
       .then((response) => {
-        // console.log(response);
         setDataset(response);
-        console.log("sfdbg", Dataset);
       })
       .catch((err) => {
         console.error(err);
-        // alert(err)
       });
-    console.log("Function Called");
-  }
-
-  useEffect(() => {
-    FetchData();
-  }, []);
-
-  setUpdateData();
-
-  function setUpdateData() {
-    for (let i in Dataset) {
-      if (Dataset[i].propertyID == processstatus) {
-        id = Dataset[i]._id;
-        Owner = Dataset[i].owner;
-        Tokenid = Dataset[i].tokenID;
-        PropertyID = Dataset[i].propertyID;
-        SurveyNo = Dataset[i].physicalSurveyNo;
-        Area = Dataset[i].Area;
-        Buyer_name = Dataset[i].Buyer_name;
-        ownerAddress = Dataset[i].ownerAddress;
-        Buyer_address = Dataset[i].Buyer_address;
-        Document_Access = Dataset[i].Document_Access;
-        tokensend = Dataset[i].tokensend;
-        ProcessStatus = Dataset[i].ProcessStatus;
-        Document_Verify = Dataset[i].Document_Verify;
-        Transaction = Dataset[i].Transaction;
-        Ownership_Transfer = Dataset[i].Ownership_Transfer;
-        Price = Dataset[i].Price;
-        ImageURL = Dataset[i].ImageURL;
-        request = Dataset[i].request;
-        InspectorName = Dataset[i].InspectorName;
-        DocumentURL = Dataset[i].DocumentURL;
-        PaymentStatus = Dataset[i].PaymentStatus;
-        ProcessStatus = Dataset[i].ProcessStatus;
-        BuyerTokenstatus = Dataset[i].BuyerTokenstatus;
-        StampDutyTokenStatus = Dataset[i].StampDutyTokenStatus;
-        OwnerAdhar = Dataset[i].OwnerAdhar;
-        OwnerContact = Dataset[i].OwnerContact;
-        PaymentDuration = Dataset[i].PaymentDuration;
-      }
-    }
   }
 
   const data = [
@@ -237,11 +260,15 @@ const processstatus = () => {
     {
       key: "3",
       name: InspectorName,
-      // address: "-",
-      address: "0x196ce4F6e2E731585B9ddc969fEd85F6cE4ED60F",
+      address: "0x196ce4F6e2E731585B9ddc969fEd85F6cE4ED60F", // Hardcoded inspector address
       tags: ["LAND INSPECTOR"],
     },
   ];
+
+  const isSeller =
+    accountAddress.toLowerCase() === ownerAddress.toLowerCase();
+  const isBuyer =
+    accountAddress.toLowerCase() === Buyer_address.toLowerCase();
 
   return (
     <div>
@@ -250,12 +277,16 @@ const processstatus = () => {
         centered
         open={opennotify}
         width={600}
-        closable={false}
+        closable={true}
+        onCancel={() => setOpennotify(false)} // Added onCancel to handle closing by 'x'
         footer={null}
       >
-        {address == ownerAddress
-          ? "Thanks for Buying Land By ❤"
-          : "Thanks for Selling Land By ❤"}
+        {notificationMessage} {/* Use the dynamic message */}
+        <div className="text-center mt-4">
+          <Button type="primary" onClick={() => setOpennotify(false)}>
+            Close
+          </Button>
+        </div>
       </Modal>
       <Modal
         title="Update Price"
@@ -291,16 +322,16 @@ const processstatus = () => {
           autoComplete="off"
         >
           <Form.Item
-            label="price"
+            label="Price"
             name="Price"
             rules={[
               {
                 required: true,
-                message: "Update Price",
+                message: "Please input the new price!",
               },
             ]}
           >
-            <Input />
+            <Input type="number" min="0" />
           </Form.Item>
 
           <Form.Item
@@ -312,7 +343,7 @@ const processstatus = () => {
             <Button
               type="primary"
               htmlType="submit"
-              className="bg-blue-500  hover:bg-blue-700 text-white text-center font-bold mx-auto px-4  rounded"
+              className="bg-blue-500 hover:bg-blue-700 text-white text-center font-bold mx-auto px-4 rounded"
             >
               Update Price
             </Button>
@@ -344,7 +375,7 @@ const processstatus = () => {
           height="640"
           frameBorder="0"
           allow="xr-spatial-tracking; gyroscope; accelerometer"
-          allowfullscreen
+          allowFullScreen
           scrolling="no"
           src="https://kuula.co/share/5hDfC?logo=1&info=1&fs=1&vr=0&sd=1&thumbs=1"
         ></iframe>
@@ -415,10 +446,8 @@ const processstatus = () => {
           <Row className="mb-10">
             <Col span={12}>
               <div className="p-2 px-4">
-                <h1 className="mt-0  font-bold">
-                  Area: {Area} sq.m.
-                </h1>
-                <h3 className="">Loaction: Mogadishu, Somalia</h3>
+                <h1 className="mt-0 font-bold">Area: {Area} sq.m.</h1>
+                <h3 className="">Location: Mogadishu, Somalia</h3>
                 <h3 className="">Price:USD {Price}</h3>
                 <h3>PID: {PropertyID}</h3>
                 <h3>Survey no: {SurveyNo}</h3>
@@ -427,146 +456,146 @@ const processstatus = () => {
               <div className="m-auto text-center">
                 <button
                   onClick={() => setOpen3d(true)}
-                  className="bg-blue-500 w-[30%]  hover:bg-blue-700 text-white font-bold py-2 mx-2 px-4 my-2 rounded"
+                  className="bg-blue-500 w-[30%] hover:bg-blue-700 text-white font-bold py-2 mx-2 px-4 my-2 rounded"
                 >
                   3D Land View
                 </button>
                 <button
-                  className="bg-blue-500 text-white font-bold py-2 px-4 rounded w-[30%] hover:bg-blue-700  mx-2 my-2 "
+                  className="bg-blue-500 text-white font-bold py-2 px-4 rounded w-[30%] hover:bg-blue-700 mx-2 my-2"
                   onClick={() => setOpendocument(true)}
                 >
                   View Document
                 </button>
                 <button
-                  className="bg-blue-500 text-white font-bold py-2 px-4 rounded w-[30%] hover:bg-blue-700  mx-2 my-2 "
+                  className="bg-blue-500 text-white font-bold py-2 px-4 rounded w-[30%] hover:bg-blue-700 mx-2 my-2"
                   onClick={() => setOpenChat(true)}
                 >
                   XMTP Chat
                 </button>
-                {/* {address === ownerAddress && ProcessStatus === 4 && (
-                  <button
-                    className="bg-purple-600 text-white font-bold py-2 px-4 rounded w-[30%] hover:bg-purple-800 mx-2 my-2"
-                    onClick={() => transferNFT(PropertyID)}
-                  >
-                    Approve & Transfer Ownership
-                  </button>
-                )} */}
-                <button
-                  className="bg-purple-600 text-white font-bold py-2 px-4 rounded w-[30%] hover:bg-purple-800 mx-2 my-2"
-                  onClick={async () => {
-                    const inspectorAddress =
-                      "0x196ce4F6e2E731585B9ddc969fEd85F6cE4ED60F"; // Replace with actual inspector address if dynamic
-                    console.log(
-                      "Approving NFT for Inspector:",
-                      inspectorAddress,
-                      "Token ID:",
-                      Tokenid
-                    );
-                    const success = await ApproveNFT(
-                      inspectorAddress,
-                      Tokenid
-                    );
-                    if (success) {
-                      alert("NFT approved for land inspector ✅");
-                    } else {
-                      alert("Failed to approve NFT ❌");
-                    }
-                  }}
-                >
-                  Approve Inspector
-                </button>
 
-                {ProcessStatus < 3 ? (
-                  <button
-                    className="bg-blue-500 text-white font-bold py-2 px-4 rounded w-[30%] hover:bg-blue-700  mx-2 my-2 "
-                    onClick={() => setOpenprice(true)}
-                  >
-                    Update Price
-                  </button>
-                ) : (
-                  <button
-                    className="disabled:opacity-25 bg-blue-500 text-white font-bold py-2 px-4 rounded w-[30%] cursor-not-allowed hover:bg-blue-700  mx-2 my-2 "
-                    disabled
-                  >
-                    Update Price
-                  </button>
+                {/* Conditional rendering for seller-only buttons */}
+                {isSeller && (
+                  <>
+                    <button
+                      className="bg-purple-600 text-white font-bold py-2 px-4 rounded w-[30%] hover:bg-purple-800 mx-2 my-2"
+                      onClick={async () => {
+                        const inspectorAddress =
+                          "0x196ce4F6e2E731585B9ddc969fEd85F6cE4ED60F"; // Replace with actual inspector address if dynamic
+                        console.log(
+                          "Approving NFT for Inspector:",
+                          inspectorAddress,
+                          "Token ID:",
+                          Tokenid
+                        );
+                        const success = await ApproveNFT(
+                          inspectorAddress,
+                          Tokenid
+                        );
+                        if (success) {
+                          alert("NFT approved for land inspector ✅");
+                        } else {
+                          alert("Failed to approve NFT ❌");
+                        }
+                      }}
+                    >
+                      Approve Inspector
+                    </button>
+
+                    {ProcessStatus < 3 ? (
+                      <button
+                        className="bg-blue-500 text-white font-bold py-2 px-4 rounded w-[30%] hover:bg-blue-700 mx-2 my-2"
+                        onClick={() => setOpenprice(true)}
+                      >
+                        Update Price
+                      </button>
+                    ) : (
+                      <button
+                        className="disabled:opacity-25 bg-blue-500 text-white font-bold py-2 px-4 rounded w-[30%] cursor-not-allowed mx-2 my-2"
+                        disabled
+                      >
+                        Update Price
+                      </button>
+                    )}
+                  </>
                 )}
-                <button
-                  className="bg-blue-500 text-white font-bold py-2 px-4 rounded w-[30%] hover:bg-blue-700  mx-2 my-2 "
-                  onClick={() => CheckBalance()}
-                >
-                  Check Balance
-                </button>
-                {PaymentStatus == true ? (
-                  <button
-                    disabled
-                    className="bg-green-500  text-white font-bold py-2 px-4 rounded   w-[30%] hover:bg-green-700 cursor-not-allowed  mx-2 my-2 "
-                  >
-                    Payment Done
-                  </button>
-                ) : address == Buyer_address && ProcessStatus == 3 ? (
+
+                {/* Conditional rendering for buyer-only buttons */}
+                {isBuyer && (
                   <>
                     <button
-                      onClick={() =>
-                        PaymentBuyertoSeller(
-                          PropertyID,
-                          Buyer_address,
-                          ownerAddress,
-                          Price
-                        )
-                      }
-                      className="disabled:opacity-25 bg-green-500  text-white font-bold py-2 px-4 rounded  w-[30%] hover:bg-green-700  mx-2 my-2 "
+                      className="bg-blue-500 text-white font-bold py-2 px-4 rounded w-[30%] hover:bg-blue-700 mx-2 my-2"
+                      onClick={() => CheckBalance()}
                     >
-                      Send Token ({parseInt(Price) * 0.05}LR)
+                      Check Balance
                     </button>
+                    {PaymentStatus === true ? (
+                      <button
+                        disabled
+                        className="bg-green-500 text-white font-bold py-2 px-4 rounded w-[30%] hover:bg-green-700 cursor-not-allowed mx-2 my-2"
+                      >
+                        Payment Done
+                      </button>
+                    ) : ProcessStatus === 3 ? ( // This button is for sending initial token to seller
+                      <button
+                        onClick={() =>
+                          PaymentBuyertoSeller(
+                            PropertyID,
+                            Buyer_address,
+                            ownerAddress,
+                            Price
+                          )
+                        }
+                        className="disabled:opacity-25 bg-green-500 text-white font-bold py-2 px-4 rounded w-[30%] hover:bg-green-700 mx-2 my-2"
+                      >
+                        Send Token ({parseInt(Price) * 0.05}LR)
+                      </button>
+                    ) : ProcessStatus < 4 ? (
+                      <button
+                        disabled
+                        className="disabled:opacity-25 bg-blue-500 text-white font-bold py-2 px-4 rounded cursor-not-allowed w-[30%] hover:bg-blue-700 mx-2 my-2"
+                      >
+                        Pending Processes
+                      </button>
+                    ) : StampDutyTokenStatus === false ? (
+                      <button
+                        onClick={() =>
+                          MaketokenPayment(
+                            PropertyID,
+                            Buyer_address,
+                            "0x7ED790A1Ac108b9A50e24f5c5E061df59e3673a7", // Inspector address for stamp duty
+                            parseInt(Price) * 0.06
+                          )
+                        }
+                        className="disabled:opacity-25 bg-green-500 text-white font-bold py-2 px-4 rounded w-[30%] hover:bg-green-700 mx-2 my-2"
+                      >
+                        Pay for Stamp Duty (
+                        {parseInt(parseInt(Price) * 0.06)}LR)
+                      </button>
+                    ) : StampDutyTokenStatus === true ? (
+                      <>
+                        <button
+                          onClick={() =>
+                            MakePayment(
+                              PropertyID,
+                              Buyer_address,
+                              ownerAddress,
+                              Price
+                            )
+                          }
+                          className="disabled:opacity-25 bg-green-500 text-white font-bold py-2 px-4 rounded w-[30%] hover:bg-green-700 mx-2 my-2"
+                        >
+                          Make Payment
+                        </button>
+                      </>
+                    ) : (
+                      <button
+                        disabled
+                        className="disabled:opacity-25 bg-green-500 text-white font-bold py-2 px-4 rounded cursor-not-allowed w-[30%] hover:bg-green-700 mx-2 my-2"
+                      >
+                        You are not allowed to Pay
+                      </button>
+                    )}
                   </>
-                ) : ProcessStatus < 4 ? (
-                  <button
-                    disabled
-                    className="disabled:opacity-25 bg-blue-500  text-white font-bold py-2 px-4 rounded cursor-not-allowed w-[30%] hover:bg-blue-700  mx-2 my-2 "
-                  >
-                    Pending Processes
-                  </button>
-                ) : address == Buyer_address &&
-                  StampDutyTokenStatus == false ? (
-                  <button
-                    onClick={() =>
-                      MaketokenPayment(
-                        PropertyID,
-                        Buyer_address,
-                        "0x7ED790A1Ac108b9A50e24f5c5E061df59e3673a7",
-                        parseInt(Price) * 0.06
-                      )
-                    }
-                    className="disabled:opacity-25 bg-green-500  text-white font-bold py-2 px-4 rounded  w-[30%] hover:bg-green-700  mx-2 my-2 "
-                  >
-                    Pay for Stamp Duty (
-                    {parseInt(parseInt(Price) * 0.06)}LR)
-                  </button>
-                ) : address == Buyer_address &&
-                  StampDutyTokenStatus == true ? (
-                  <>
-                    <button
-                      onClick={() =>
-                        MakePayment(
-                          PropertyID,
-                          Buyer_address,
-                          ownerAddress,
-                          Price
-                        )
-                      }
-                      className="disabled:opacity-25 bg-green-500  text-white font-bold py-2 px-4 rounded  w-[30%] hover:bg-green-700  mx-2 my-2 "
-                    >
-                      Make Payment
-                    </button>
-                  </>
-                ) : (
-                  <button
-                    disabled
-                    className="disabled:opacity-25 bg-green-500  text-white font-bold py-2 px-4 rounded cursor-not-allowed w-[30%] hover:bg-green-700  mx-2 my-2 "
-                  >
-                    You are not allow to Pay
-                  </button>
                 )}
               </div>
             </Col>
@@ -576,7 +605,7 @@ const processstatus = () => {
                 className="m-auto w-[500px] h-48 rounded-2xl cursor-pointer hover:blur-sm"
                 src={ImageURL}
                 alt={ImageURL}
-              />{" "}
+              />
               <br />
               <div className="text-center ">
                 {ProcessStatus > 3 ? (
@@ -586,9 +615,10 @@ const processstatus = () => {
                 ) : (
                   <></>
                 )}
+                {/* Cancel deal button visible to both, but perhaps with different implications */}
                 <button
-                  onClick={() => setOpen3d(true)}
-                  className="bg-red-500 w-[30%]  hover:bg-red-700 text-white font-bold py-2 mx-2 px-4 my-2 rounded"
+                  onClick={() => setOpen3d(true)} // This currently opens 3D view, needs to be updated for "Cancel deal" logic
+                  className="bg-red-500 w-[30%] hover:bg-red-700 text-white font-bold py-2 mx-2 px-4 my-2 rounded"
                 >
                   Cancel deal
                 </button>
@@ -607,7 +637,6 @@ const processstatus = () => {
                 title: "2. Document Verification / Negotiation",
                 status: SetStatus(2, ProcessStatus),
                 icon: SetIcon(2, ProcessStatus),
-                // icon: <SolutionOutlined />,
               },
               {
                 title: "3. Token Send",
@@ -618,7 +647,6 @@ const processstatus = () => {
                 title: "4. Transaction",
                 status: SetStatus(4, ProcessStatus),
                 icon: SetIcon(4, ProcessStatus),
-                // icon: <LoadingOutlined />,
               },
               {
                 title: "5. Ownership Transfered",
@@ -637,14 +665,16 @@ const processstatus = () => {
       </div>
 
       <Footer />
-      <Chat
-        account={address} //user address
-        supportAddress={support_address} //support address
-        apiKey="jVPMCRom1B.iDRMswdehJG7NpHDiECIHwYMMv6k2KzkPJscFIDyW8TtSnk4blYnGa8DIkfuacU0"
-        env="staging"
-      />
+      {accountAddress && support_address && (
+        <Chat
+          account={accountAddress}
+          supportAddress={support_address}
+          apiKey="jVPMCRom1B.iDRMswdehJG7NpHDiECIHwYMMv6k2KzkPJscFIDyW8TtSnk4blYnGa8DIkfuacU0"
+          env="staging"
+        />
+      )}
     </div>
   );
 };
 
-export default processstatus;
+export default ProcessStatusComponent;
