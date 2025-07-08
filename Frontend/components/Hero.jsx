@@ -1,10 +1,11 @@
 import { useState } from "react";
 import axios from "axios";
 import Image from "next/image";
+import Link from "next/link"; // Import Link
 
 import { ScatteredSpheres } from "../svg/ScatteredSpheres";
 import MacBarSrc from "../public/images/mac-bar.png";
-import Img from "../public/images/landmeasure.jpg"
+import Img from "../public/images/landmeasure.jpg";
 
 // Built with Vivid (https://vivid.lol) ⚡️
 
@@ -38,14 +39,14 @@ export const Hero = () => {
             data-aos="zoom-y-out"
             className="text-5xl font-bold leading-tight tracking-tighter text-gray-800 md:text-7xl dark:text-gray-100"
           >
-          SECURING {" "}
+            SECURING{" "}
             <span className="bg-gradient-to-l from-rose-500 via-violet-600 to-blue-700 bg-clip-text text-transparent">
-             LAND, 
+              LAND,
             </span>
             <br />
-            EMPOWERING {" "}
+            EMPOWERING{" "}
             <span className="bg-gradient-to-r from-rose-500 via-violet-600 to-blue-700 bg-clip-text text-transparent">
-            OWNERSHIP.
+              OWNERSHIP.
             </span>
           </h1>
           <p
@@ -53,19 +54,21 @@ export const Hero = () => {
             data-aos-delay="150"
             className="text-lg text-gray-600 md:text-xl dark:text-gray-400"
           >
-            Land registry using blockchain enables secure, transparent, and tamper-proof recording of land ownership and transactional history.
+            Land registry using blockchain enables secure,
+            transparent, and tamper-proof recording of land ownership
+            and transactional history.
           </p>
           <div
             className="flex flex-col"
             data-aos="zoom-y-out"
             data-aos-delay="300"
           >
-            <a
-                href='/dashboard'
-                className="px-4 py-2 font-bold rounded-lg text-gray-50 bg-[#004E89] hover:bg-[#003A66]  w-fit"
-              >
-                GET STARTED
-              </a>
+            <Link // Changed <a> to <Link>
+              href="/dashboard"
+              className="px-4 py-2 font-bold rounded-lg text-gray-50 bg-[#004E89] hover:bg-[#003A66]  w-fit"
+            >
+              GET STARTED
+            </Link>
           </div>
         </div>
         {/* Image */}
@@ -79,12 +82,8 @@ export const Hero = () => {
             className="rounded-t-lg md:rounded-t-xl"
             alt="Mac window bar"
           />
-          
-          <Image
-            src={Img}
-            className=""
-            alt="Mac window bar"
-          />
+
+          <Image src={Img} className="" alt="Mac window bar" />
           {/* <video
             autoPlay
             loop

@@ -16,7 +16,9 @@ const Navbar = () => {
   return (
     <nav className="bg-white border-gray-200 px-2 sm:px-4 py-2.5 shadow-lg fixed w-full z-50 bg-opacity-80">
       <div className="container flex flex-wrap items-center justify-between mx-auto">
-        <a href="/dashboard" className="flex items-center">
+        <Link href="/dashboard" className="flex items-center">
+          {" "}
+          {/* Changed <a> to <Link> */}
           <div className="flex flex-row items-center gap-1">
             {/* <Image src="/images/logo.png" alt="Vivid logo" height="40" width="40" /> */}
             <div className="text-3xl font-bold">
@@ -25,7 +27,7 @@ const Navbar = () => {
               </span>
             </div>
           </div>
-        </a>
+        </Link>
         <div className="flex md:order-2">
           {!(<Metamask />) ? (
             <>
