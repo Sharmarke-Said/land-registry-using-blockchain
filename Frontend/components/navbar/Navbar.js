@@ -1,3 +1,4 @@
+// components/navbar/Navbar.js
 import React from "react";
 import Metamask from "../metamask";
 import Link from "next/link";
@@ -6,7 +7,11 @@ import { Chat } from "../../PushModule/@pushprotocol/uiweb";
 
 const Navbar = () => {
   const router = useRouter();
-  const path = `/${router.pathname}`;
+  const currentPath = router.pathname;
+
+  // Define the paths where "My lands" should NOT be visible
+  const excludedPaths = ["/dashboard", "/inspectordashboard"];
+  const showMyLands = !excludedPaths.includes(currentPath);
 
   return (
     <nav className="bg-white border-gray-200 px-2 sm:px-4 py-2.5 shadow-lg fixed w-full z-50 bg-opacity-80">
@@ -33,8 +38,6 @@ const Navbar = () => {
             </>
           ) : (
             <>
-              {/* <button
-             type="button" href={path} className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-4">Relaod</button> */}
               <Link
                 type="button"
                 href="/request"
@@ -42,13 +45,16 @@ const Navbar = () => {
               >
                 Requests
               </Link>
-              <Link
-                type="button"
-                href="/mylands"
-                className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-4"
-              >
-                My lands
-              </Link>
+              {/* Conditionally render "My lands" tab */}
+              {showMyLands && (
+                <Link
+                  type="button"
+                  href="/mylands"
+                  className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-4"
+                >
+                  My lands
+                </Link>
+              )}
               <button
                 type="button"
                 className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-3 md:mr-0 "
@@ -81,22 +87,6 @@ const Navbar = () => {
             </svg>
           </button>
         </div>
-        {/* <div className="items-center justify-between hidden w-full md:flex md:w-auto md:order-1" id="navbar-cta">
-    <ul className="flex flex-col p-4 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 md:mt-0 md:text-sm md:font-medium md:border-0 md:bg-white ">
-      <li>
-        <a href="#" className="block py-2 pl-3 pr-4 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 " aria-current="page"></a>
-      </li>
-      <li>
-        <a href="#" className="block py-2 pl-3 pr-4 text-gray-700 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 "></a>
-      </li>
-      <li>
-        <a href="#" className="block py-2 pl-3 pr-4 text-gray-700 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 "></a>
-      </li>
-      <li>
-        <a href="#" className="block py-2 pl-3 pr-4 text-gray-700 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 "></a>
-      </li>
-    </ul>
-  </div> */}
       </div>
       <Chat
         account="0x1D853e5a1eE20b61dc3187558Eda7F3b8eD14AB7" //user address

@@ -1,3 +1,4 @@
+// inspectorDashboard.js
 import React, { useEffect, useState, useCallback } from "react";
 import Navbar from "../components/navbar/Navbar";
 import { MinusOutlined, PlusOutlined } from "@ant-design/icons";

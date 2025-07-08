@@ -1,3 +1,4 @@
+// pages/dashboard.js
 import { React, useState, useEffect } from "react";
 import {
   Card,
@@ -192,7 +193,7 @@ const dashboard = () => {
         <Col
           span={6}
           onClick={() => setModalSeller(true)}
-          className=" m-8 cursor-pointer transition ease-in-out delay-150  hover:-translate-y-1 hover:scale-110  duration-300 "
+          className=" m-8 cursor-pointer transition ease-in-out delay-150  hover:-translate-y-1 hover:scale-110  duration-300 "
         >
           <Card title="SELLER LOGIN" bordered={false}>
             <ul className="font-bold text-lg mb-2 text-center">
@@ -208,7 +209,7 @@ const dashboard = () => {
         <Col
           span={6}
           onClick={() => setModalBuyer(true)}
-          className=" m-8 cursor-pointer transition ease-in-out delay-150  hover:-translate-y-1 hover:scale-110  duration-300"
+          className=" m-8 cursor-pointer transition ease-in-out delay-150  hover:-translate-y-1 hover:scale-110  duration-300"
         >
           <Card title="Buyer Login" bordered={false}>
             <ul className="font-bold text-lg mb-2 text-center">
@@ -224,7 +225,7 @@ const dashboard = () => {
         <Col
           span={6}
           onClick={() => setModalInspector(true)}
-          className=" m-8 cursor-pointer transition ease-in-out delay-150  hover:-translate-y-1 hover:scale-110  duration-300"
+          className=" m-8 cursor-pointer transition ease-in-out delay-150  hover:-translate-y-1 hover:scale-110  duration-300"
         >
           <Card title="Land Inspector" bordered={false}>
             <ul className="font-bold text-lg mb-2 text-center">
